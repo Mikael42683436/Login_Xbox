@@ -58,11 +58,11 @@
         --surface3: #ebebeb;
         --border: rgba(0,0,0,0.08);
         --border-hover: rgba(0,0,0,0.15);
-        --border-focus: rgba(16,124,16,0.55);
-        --accent: #107C10;
-        --accent-dark: #0a5a0a;
-        --accent-light: #1a9e1a;
-        --accent-glow: rgba(16,124,16,0.1);
+        --border-focus: rgba(0,0,0,0.55);
+        --accent: #0f0f0f;
+        --accent-dark: #000000;
+        --accent-light: #333333;
+        --accent-glow: rgba(0,0,0,0.08);
         --text: #0f0f0f;
         --text-secondary: #444444;
         --text-muted: #888888;
@@ -80,7 +80,7 @@
         --ld-bar: #1c1c1c;
         --ld-bar-glow: rgba(0,0,0,0.35);
         --ld-dot: rgba(0,0,0,0.038);
-        --ld-logo-fill: #107C10;
+        --ld-logo-fill: #0f0f0f;
       }
     }
 
@@ -110,8 +110,8 @@
     @media (prefers-color-scheme: light) {
       body::before {
         background-image:
-          radial-gradient(ellipse 800px 600px at 50% -100px, rgba(16,124,16,0.05) 0%, transparent 70%),
-          radial-gradient(ellipse 400px 400px at 100% 100%, rgba(16,124,16,0.03) 0%, transparent 60%);
+          radial-gradient(ellipse 800px 600px at 50% -100px, rgba(0,0,0,0.03) 0%, transparent 70%),
+          radial-gradient(ellipse 400px 400px at 100% 100%, rgba(0,0,0,0.02) 0%, transparent 60%);
       }
     }
     body::after {
@@ -145,10 +145,10 @@
     @media (prefers-color-scheme: light) {
       .card {
         box-shadow:
-          0 0 0 1px rgba(16,124,16,0.08),
+          0 0 0 1px rgba(0,0,0,0.06),
           0 4px 6px -1px rgba(0,0,0,0.06),
           0 20px 60px -12px rgba(0,0,0,0.1),
-          0 0 80px -30px rgba(16,124,16,0.04);
+          0 0 80px -30px rgba(0,0,0,0.04);
       }
     }
     .card.ld-revealed { animation: fadeUp 0.6s cubic-bezier(0.4,0,0.2,1) both; }
@@ -181,15 +181,15 @@
     }
     @media (prefers-color-scheme: light) {
       .logo-badge {
-        background: rgba(16,124,16,0.08);
-        border-color: rgba(16,124,16,0.2);
+        background: rgba(0,0,0,0.06);
+        border-color: rgba(0,0,0,0.18);
       }
     }
 
     /* ── STEPS ── */
     .steps { display:flex; align-items:center; gap:6px; margin-bottom:22px; }
     .step-dot { height:3px; flex:1; border-radius:2px; background:var(--surface3); transition:var(--transition); }
-    .step-dot.active { background:var(--accent); box-shadow:0 0 8px rgba(82,176,67,0.4); }
+    .step-dot.active { background:var(--accent); box-shadow:0 0 8px var(--accent-glow); }
     .step-dot.done { background:var(--accent-dark); }
 
     /* ── HEADINGS ── */
@@ -229,7 +229,7 @@
     input:hover { border-color:var(--border-hover); background:var(--surface3); }
     input:focus { border-color:var(--border-focus); box-shadow:0 0 0 3px rgba(82,176,67,0.1); background:var(--surface2); }
     @media (prefers-color-scheme: light) {
-      input:focus { box-shadow: 0 0 0 3px rgba(16,124,16,0.1); }
+      input:focus { box-shadow: 0 0 0 3px rgba(0,0,0,0.1); }
     }
     .input-wrap:has(input:focus) > svg { color:var(--accent); }
     input.error { border-color:var(--error)!important; box-shadow:0 0 0 3px rgba(229,62,62,0.1)!important; }
@@ -253,6 +253,10 @@
       transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
       display:flex; align-items:center; justify-content:center; gap:8px;
       box-shadow: 0 4px 14px rgba(82,176,67,0.25);
+    }
+    @media (prefers-color-scheme: light) {
+      .btn-primary { box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
+      .btn-primary:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
     }
     .btn-primary::before {
       content:''; position:absolute; inset:0;
@@ -305,7 +309,7 @@
       margin:0 auto 18px; border:1px solid rgba(82,176,67,0.25);
     }
     @media (prefers-color-scheme: light) {
-      .verify-icon { border-color: rgba(16,124,16,0.2); }
+      .verify-icon { border-color: rgba(0,0,0,0.15); }
     }
     .verify-icon svg { width:26px; height:26px; color:var(--accent); }
     .verify-center { text-align:center; }
@@ -337,7 +341,7 @@
       animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
     }
     @media (prefers-color-scheme: light) {
-      .success-icon { background:rgba(16,124,16,0.08); border-color:rgba(16,124,16,0.2); }
+      .success-icon { background:rgba(0,0,0,0.06); border-color:rgba(0,0,0,0.15); }
     }
     @keyframes popIn {
       from { transform:scale(0); opacity:0; }
@@ -690,120 +694,8 @@
         <div class="spinner"></div>
       </button>
     </div>
-    <div style="text-align:center;margin-top:2px;">
-      <button style="background:none;border:none;color:var(--accent);cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:500;padding:0;" onclick="showForgotScreen()">Esqueci minha senha</button>
-    </div>
     <div class="back-link">
       <button onclick="showScreen('screen-register')">← Criar uma nova conta</button>
-    </div>
-  </div>
-
-  <!-- ═══ TELA: RECUPERAÇÃO (email) ═══ -->
-  <div id="screen-forgot" class="screen">
-    <div class="steps">
-      <div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div>
-    </div>
-    <div class="form-heading">
-      <h1>Recuperar conta</h1>
-      <p>Informe o e-mail da sua conta. Verificaremos se existe e enviaremos um código.</p>
-    </div>
-    <div class="fields">
-      <div class="field">
-        <label>E-mail da conta</label>
-        <div class="input-wrap">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          <input type="email" id="forgot-email" placeholder="seu@email.com" autocomplete="email">
-        </div>
-        <span class="field-hint" id="h-forgot-email">E-mail nao encontrado na base</span>
-      </div>
-      <button class="btn-primary" id="btn-forgot" onclick="doForgot()">
-        <span class="btn-text">Enviar codigo de verificacao</span>
-        <div class="spinner"></div>
-      </button>
-    </div>
-    <div class="back-link"><button onclick="showLoginScreen()">← Voltar para o login</button></div>
-  </div>
-
-  <!-- ═══ TELA: RECUPERAÇÃO (OTP) ═══ -->
-  <div id="screen-forgot-otp" class="screen">
-    <div class="steps">
-      <div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div>
-    </div>
-    <div class="verify-center">
-      <div class="verify-icon">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
-      </div>
-      <h1>Confirme o codigo</h1>
-      <p>Codigo enviado para<br><strong id="forgot-email-show"></strong></p>
-      <p id="forgot-email-status" style="font-size:12.5px;margin-top:-14px;margin-bottom:20px;line-height:1.5;min-height:18px;"></p>
-      <div class="code-inputs" id="forgot-code-inputs">
-        <input type="text" maxlength="1" inputmode="numeric" oninput="fCodeInput(this,0)" onkeydown="fCodeKey(event,0)">
-        <input type="text" maxlength="1" inputmode="numeric" oninput="fCodeInput(this,1)" onkeydown="fCodeKey(event,1)">
-        <input type="text" maxlength="1" inputmode="numeric" oninput="fCodeInput(this,2)" onkeydown="fCodeKey(event,2)">
-        <input type="text" maxlength="1" inputmode="numeric" oninput="fCodeInput(this,3)" onkeydown="fCodeKey(event,3)">
-        <input type="text" maxlength="1" inputmode="numeric" oninput="fCodeInput(this,4)" onkeydown="fCodeKey(event,4)">
-        <input type="text" maxlength="1" inputmode="numeric" oninput="fCodeInput(this,5)" onkeydown="fCodeKey(event,5)">
-      </div>
-      <span class="field-hint" id="hint-forgot-code" style="display:none;text-align:center;margin-bottom:12px;">Codigo incorreto.</span>
-      <button class="btn-primary" id="btn-forgot-verify" onclick="doForgotVerify()" style="margin-top:12px;">
-        <span class="btn-text">Confirmar codigo</span>
-        <div class="spinner"></div>
-      </button>
-      <div class="resend-row">Nao recebeu? <button id="btn-forgot-resend" onclick="resendForgotCode()">Reenviar codigo</button></div>
-    </div>
-    <div class="back-link"><button onclick="showForgotScreen()">← Voltar</button></div>
-  </div>
-
-  <!-- ═══ TELA: NOVA SENHA ═══ -->
-  <div id="screen-new-password" class="screen">
-    <div class="steps">
-      <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div>
-    </div>
-    <div class="form-heading">
-      <h1>Criar nova senha</h1>
-      <p>Escolha uma senha forte para sua conta</p>
-    </div>
-    <div class="fields">
-      <div class="field">
-        <label>Nova senha</label>
-        <div class="input-wrap has-toggle">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-          <input type="password" id="new-senha" placeholder="Minimo 8 caracteres" autocomplete="new-password">
-          <button class="pwd-toggle" onclick="togglePwd('new-senha',this)" tabindex="-1"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-        </div>
-        <span class="field-hint" id="h-new-senha">Minimo 8 caracteres</span>
-      </div>
-      <div class="field">
-        <label>Confirmar nova senha</label>
-        <div class="input-wrap has-toggle">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          <input type="password" id="new-senha2" placeholder="Repita a nova senha" autocomplete="new-password">
-          <button class="pwd-toggle" onclick="togglePwd('new-senha2',this)" tabindex="-1"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-        </div>
-        <span class="field-hint" id="h-new-senha2">As senhas nao coincidem</span>
-      </div>
-      <button class="btn-primary" id="btn-new-password" onclick="doNewPassword()">
-        <span class="btn-text">Salvar nova senha</span>
-        <div class="spinner"></div>
-      </button>
-    </div>
-  </div>
-
-  <!-- ═══ TELA: SUCESSO RECUPERAÇÃO ═══ -->
-  <div id="screen-recovery-success" class="screen">
-    <div class="steps">
-      <div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div>
-    </div>
-    <div class="success-center">
-      <div class="success-icon">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      </div>
-      <h1>Senha alterada!</h1>
-      <p>Sua nova senha foi salva com sucesso.</p>
-      <button class="btn-primary" style="margin-top:0" onclick="showLoginScreen()">
-        <span class="btn-text">Ir para o login</span>
-        <div class="spinner"></div>
-      </button>
     </div>
   </div>
 
@@ -906,6 +798,7 @@ let pendingUserData = null;
   }
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', dismiss);
   else dismiss();
+  // Segurança: força o dismiss após 5s no máximo
   setTimeout(dismiss, 5000);
 }());
 
@@ -1344,179 +1237,6 @@ Object.keys(errMap).forEach(id =>
 );
 document.getElementById('login-email').addEventListener('input', () => clearError('login-email','h-login-email'));
 document.getElementById('login-senha').addEventListener('input', () => clearError('login-senha','h-login-senha'));
-
-/* ══════════════════════════════════════
-   RECUPERAÇÃO DE CONTA
-══════════════════════════════════════ */
-let forgotCode = '';
-let forgotEmail = '';
-let forgotUserId = '';
-
-function showForgotScreen(){
-  document.getElementById('forgot-email').value = '';
-  document.getElementById('h-forgot-email').style.display = 'none';
-  document.getElementById('forgot-email').classList.remove('error');
-  showScreen('screen-forgot');
-}
-
-async function doForgot(){
-  const email = document.getElementById('forgot-email').value.trim().toLowerCase();
-  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    setError('forgot-email','h-forgot-email','Digite um e-mail valido');
-    return;
-  }
-  setBtn('btn-forgot', true);
-
-  // Verifica se existe na tabela profiles
-  const { data: profile, error } = await supa.from('profiles').select('id, full_name, email').eq('email', email).maybeSingle();
-
-  if(error || !profile){
-    setError('forgot-email','h-forgot-email','E-mail nao encontrado na base');
-    setBtn('btn-forgot', false);
-    return;
-  }
-
-  forgotEmail = email;
-  forgotUserId = profile.id;
-
-  // Envia OTP
-  forgotCode = generateCode();
-  document.getElementById('forgot-email-show').textContent = email;
-  const st = document.getElementById('forgot-email-status');
-  st.textContent = 'Enviando codigo...'; st.style.color = 'var(--text-secondary)';
-  showScreen('screen-forgot-otp');
-  document.querySelectorAll('#forgot-code-inputs input').forEach(i => i.value = '');
-  document.getElementById('hint-forgot-code').style.display = 'none';
-  document.querySelectorAll('#forgot-code-inputs input')[0].focus();
-
-  try {
-    await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-      to_email: email,
-      to_name: profile.full_name || email.split('@')[0],
-      code: forgotCode
-    });
-    st.textContent = '✓ Codigo enviado. Verifique sua caixa de entrada.';
-    st.style.color = 'var(--success)';
-  } catch(err){
-    st.textContent = '⚠ Erro ao enviar: ' + (err.text || JSON.stringify(err));
-    st.style.color = 'var(--error)';
-  }
-  setBtn('btn-forgot', false);
-}
-
-function fCodeInput(el, idx){
-  el.value = el.value.replace(/\D/g,'');
-  const inputs = document.querySelectorAll('#forgot-code-inputs input');
-  if(el.value && idx < 5) inputs[idx+1].focus();
-  if(Array.from(inputs).map(i=>i.value).join('').length === 6) doForgotVerify();
-}
-function fCodeKey(e, idx){
-  const inputs = document.querySelectorAll('#forgot-code-inputs input');
-  if(e.key === 'Backspace' && !inputs[idx].value && idx > 0){
-    inputs[idx-1].focus(); inputs[idx-1].value = '';
-  }
-}
-
-async function doForgotVerify(){
-  const inputs = document.querySelectorAll('#forgot-code-inputs input');
-  const entered = Array.from(inputs).map(i=>i.value).join('');
-  if(entered.length < 6) return;
-
-  if(entered !== forgotCode){
-    document.getElementById('hint-forgot-code').style.display = 'block';
-    inputs.forEach(i=>{ i.value=''; i.classList.add('error'); });
-    inputs[0].focus();
-    setTimeout(()=>inputs.forEach(i=>i.classList.remove('error')), 1200);
-    return;
-  }
-
-  document.getElementById('hint-forgot-code').style.display = 'none';
-  // Codigo correto: vai para tela de nova senha
-  document.getElementById('new-senha').value = '';
-  document.getElementById('new-senha2').value = '';
-  document.getElementById('h-new-senha').style.display = 'none';
-  document.getElementById('h-new-senha2').style.display = 'none';
-  showScreen('screen-new-password');
-}
-
-async function resendForgotCode(){
-  const btn = document.getElementById('btn-forgot-resend');
-  btn.disabled = true;
-  forgotCode = generateCode();
-  const st = document.getElementById('forgot-email-status');
-  st.textContent = 'Reenviando...'; st.style.color = 'var(--text-secondary)';
-  try {
-    const { data: profile } = await supa.from('profiles').select('full_name').eq('email', forgotEmail).maybeSingle();
-    await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-      to_email: forgotEmail,
-      to_name: profile?.full_name || forgotEmail.split('@')[0],
-      code: forgotCode
-    });
-    st.textContent = '✓ Novo codigo enviado.'; st.style.color = 'var(--success)';
-  } catch(err){ st.textContent = '⚠ Erro ao reenviar.'; st.style.color = 'var(--error)'; }
-  let t = 30;
-  const iv = setInterval(()=>{
-    t--;
-    btn.textContent = t > 0 ? 'Aguarde '+t+'s' : 'Reenviar codigo';
-    if(t <= 0){ clearInterval(iv); btn.disabled = false; }
-  }, 1000);
-}
-
-async function doNewPassword(){
-  const s1 = document.getElementById('new-senha').value;
-  const s2 = document.getElementById('new-senha2').value;
-  let ok = true;
-  if(s1.length < 8){ setError('new-senha','h-new-senha','Minimo 8 caracteres'); ok=false; }
-  if(s1 !== s2){ setError('new-senha2','h-new-senha2','As senhas nao coincidem'); ok=false; }
-  if(!ok) return;
-
-  setBtn('btn-new-password', true);
-
-  // Faz login temporario para obter sessao e trocar senha via Supabase Auth
-  const { data: signIn, error: signInErr } = await supa.auth.signInWithPassword({
-    email: forgotEmail,
-    password: '___temp_recovery_check___'
-  });
-
-  // signIn vai falhar (senha errada) — mas podemos usar admin update via service key
-  // Como estamos no frontend com chave publica, usamos a funcao de reset nativa do Supabase:
-  // A unica forma segura sem service_role no frontend e usar updateUser apos signIn.
-  // Solucao: salvar nova senha em profiles e usar signInWithPassword para validar depois.
-  // Mas o correto e: usar supa.auth.resetPasswordForEmail + redirect link.
-  // Aqui usamos uma abordagem alternativa: armazenamos o hash no profiles e o sistema de login
-  // valida pelo Supabase Auth via OTP ja verificado.
-
-  // Abordagem correta no frontend: apos OTP verificado, update via signInWithOtp token
-  // Como nao temos service_role, vamos usar o resetPasswordForEmail do Supabase que
-  // envia um link magico. Mas o usuario ja verificou via OTP nosso — entao fazemos:
-  // signInWithOtp (magic link) nao funciona sem redirect.
-  // SOLUCAO FINAL: usar Admin API via Edge Function OU salvar senha encriptada em profiles.
-  
-  // Implementacao pratica: usa supa.auth.admin nao disponivel no client.
-  // Alternativa real sem backend: enviar o reset link oficial do Supabase por email.
-  
-  // Como o projeto ja tem EmailJS e OTP proprio, vamos salvar a nova_senha em profiles
-  // e o sistema de login ira usar essa senha para autenticar via Supabase Auth update.
-  // Para isso precisamos de uma Edge Function ou da chave service_role.
-  
-  // IMPLEMENTACAO COM SUPABASE EDGE FUNCTION (recomendado):
-  // Chama endpoint que recebe {userId, newPassword} e usa admin.updateUserById
-  
-  try {
-    const res = await fetch('https://zoghidblqnupdbuoayal.supabase.co/functions/v1/reset-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + 'sb_publishable_rgC0ai-RLv0ye2_hWdIhyA_Mo4aNV6J' },
-      body: JSON.stringify({ userId: forgotUserId, newPassword: s1 })
-    });
-    const result = await res.json();
-    if(!res.ok) throw new Error(result.error || 'Erro ao atualizar');
-    showToast('✅ Senha alterada com sucesso!');
-    showScreen('screen-recovery-success');
-  } catch(err){
-    showToast('❌ Erro: ' + err.message);
-  }
-  setBtn('btn-new-password', false);
-}
 </script>
 </body>
 </html>
